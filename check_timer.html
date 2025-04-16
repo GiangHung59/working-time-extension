@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        body.dark {
+            background-color: #1a1a1a;
+            color: #f1f1f1;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #themeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #666;
+            color: #fff;
+        }
+        #fileInput {
+            display: block;
+            margin: 20px auto;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        body.light #result {
+            background-color: #fff;
+        }
+        body.dark #result {
+            background-color: #2a2a2a;
+        }
+        .error {
+            color: #ff5555;
+        }
+        #sessionList {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+        }
+        #sessionList li {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        body.light #sessionList li {
+            background-color: #e0e0e0;
+        }
+        body.dark #sessionList li {
+            background-color: #3a3a3a;
+        }
+    </style>
+</head>
+<body class="light">
+    <button id="themeToggle">Chuyển giao diện</button>
+    <div class="container">
+        <h1>Timer Analyzer</h1>
+        <input type="file" id="fileInput" multiple accept=".json,.csv">
+        <div id="result"></div>
+        <ul id="sessionList"></ul>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const resultDiv = document.getElementById('result');
+        const sessionList = document.getElementById('sessionList');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Xử lý giao diện sáng/tối
+        const setTheme = (isDark) => {
+            document.body.className = isDark ? 'dark' : 'light';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+
+        // Khởi tạo giao diện theo hệ thống hoặc tùy chọn người dùng
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme === 'dark');
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setTheme(prefersDark);
+        }
+
+        // Sự kiện chuyển đổi giao diện
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.className === 'dark';
+            setTheme(!isDark);
+        });
+
+        // Hàm chuyển thời gian HH:MM:SS thành giây
+        const parseTimeToSeconds = (timeStr) => {
+            const [h, m, s] = timeStr.split(':').map(Number);
+            return h * 3600 + m * 60 + s;
+        };
+
+        // Hàm chuyển giây thành HH:MM:SS
+        const formatTime = (s) => {
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        };
+
+        // Hàm chuyển chuỗi created (HH:MM:SS DD/M/YYYY) thành timestamp
+        const parseCreatedToTimestamp = (createdStr) => {
+            const [time, date] = createdStr.split(' ');
+            const [day, month, year] = date.split('/').map(Number);
+            return new Date(year, month - 1, day).getTime();
+        };
+
+        // Hàm lấy ngày từ chuỗi created (HH:MM:SS DD/M/YYYY) để đếm ngày duy nhất
+        const getDateFromCreated = (createdStr) => {
+            const [time, date] = createdStr.split(' ');
+            return date; // Trả về "DD/M/YYYY"
+        };
+
+        // Hàm đọc tệp CSV và chuyển thành mảng phiên
+        const parseCsv = (csvContent) => {
+            const lines = csvContent.split('\n').filter(line => line.trim());
+            if (lines.length < 1) return [];
+
+            const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
+            const sessions = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(value => value.trim().replace(/"/g, ''));
+                if (values.length === headers.length) {
+                    const session = {};
+                    headers.forEach((header, index) => {
+                        session[header.toLowerCase()] = values[index];
+                    });
+                    sessions.push(session);
+                }
+            }
+            return sessions;
+        };
+
+        // Hàm xử lý khi người dùng chọn tệp
+        fileInput.addEventListener('change', async (event) => {
+            const files = event.target.files;
+            if (files.length === 0) {
+                resultDiv.innerHTML = '<p class="error">Vui lòng chọn ít nhất một tệp!</p>';
+                sessionList.innerHTML = '';
+                return;
+            }
+
+            let allSessions = new Set(); // Sử dụng Set để loại bỏ trùng lặp
+            let sessionArray = []; // Mảng để lưu trữ phiên và sắp xếp
+            let totalSeconds = 0;
+            let uniqueDates = new Set(); // Đếm số ngày duy nhất
+
+            for (const file of files) {
+                try {
+                    const text = await file.text();
+                    let sessions;
+
+                    if (file.name.endsWith('.json')) {
+                        sessions = JSON.parse(text);
+                    } else if (file.name.endsWith('.csv')) {
+                        sessions = parseCsv(text);
+                    } else {
+                        resultDiv.innerHTML += `<p class="error">Định dạng tệp không hỗ trợ: ${file.name}</p>`;
+                        continue;
+                    }
+
+                    sessions.forEach(session => {
+                        const sessionStr = JSON.stringify(session);
+                        if (!allSessions.has(sessionStr)) {
+                            allSessions.add(sessionStr);
+                            sessionArray.push(session);
+                            totalSeconds += parseTimeToSeconds(session.time);
+                            uniqueDates.add(getDateFromCreated(session.created)); // Thêm ngày duy nhất
+                        }
+                    });
+                } catch (e) {
+                    resultDiv.innerHTML += `<p class="error">Lỗi khi đọc tệp ${file.name}: ${e.message}</p>`;
+                }
+            }
+
+            // Tính tổng thời gian
+            const totalTime = formatTime(totalSeconds);
+
+            // Số ngày duy nhất
+            const uniqueDaysCount = uniqueDates.size;
+            const timestamps = sessionArray.map(session => parseCreatedToTimestamp(session.created));
+
+            if (timestamps.length === 0) {
+                resultDiv.innerHTML = '<p class="error">Không có phiên nào để phân tích!</p>';
+                sessionList.innerHTML = '';
+                return;
+            }
+
+            const earliest = Math.min(...timestamps);
+            const latest = Math.max(...timestamps);
+
+            // Hiển thị kết quả tổng
+            resultDiv.innerHTML = `
+                <p><strong>Tổng thời gian:</strong> ${totalTime}</p>
+                <p><strong>Số ngày có thời gian:</strong> ${uniqueDaysCount} ngày (từ ${new Date(earliest).toLocaleDateString('vi-VN')} đến ${new Date(latest).toLocaleDateString('vi-VN')})</p>
+                <p><strong>Tổng số phiên (sau khi loại bỏ trùng lặp):</strong> ${allSessions.size}</p>
+            `;
+
+            // Sắp xếp danh sách phiên theo thời gian created (gần nhất ở trên)
+            sessionArray.sort((a, b) => parseCreatedToTimestamp(b.created) - parseCreatedToTimestamp(a.created));
+
+            // Hiển thị danh sách phiên
+            sessionList.innerHTML = '';
+            sessionArray.forEach(session => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${session.name}</strong> - ${session.time} - ${session.created} (Sheet: ${session.sheetId})`;
+                sessionList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
