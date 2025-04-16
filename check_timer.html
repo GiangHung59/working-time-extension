@@ -148,9 +148,9 @@
             return date; // Trả về "DD/M/YYYY"
         };
 
-        // Hàm tạo khóa duy nhất để kiểm tra trùng lặp dựa trên name, time, created
+        // Hàm tạo khóa duy nhất để kiểm tra trùng lặp dựa trên name và time
         const getSessionKey = (session) => {
-            return `${session.name}|${session.time}|${session.created}`;
+            return `${session.name}|${session.time}`;
         };
 
         // Hàm đọc tệp CSV và chuyển thành mảng phiên
@@ -183,7 +183,7 @@
                 return;
             }
 
-            let uniqueSessionKeys = new Set(); // Sử dụng Set để loại bỏ trùng lặp dựa trên name, time, created
+            let uniqueSessionKeys = new Set(); // Sử dụng Set để loại bỏ trùng lặp dựa trên name và time
             let sessionArray = []; // Mảng để lưu trữ phiên và sắp xếp
             let totalSeconds = 0;
             let uniqueDates = new Set(); // Đếm số ngày duy nhất
