@@ -15,22 +15,22 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-image: url('https://raw.githubusercontent.com/GiangHung59/png/main/back.png'); /* Hình nền mới */
         }
         body.light {
             background-color: #f0f0f0;
             color: #333;
-            background-image: url('https://images.unsplash.com/photo-1618354691373-d851c5c3a990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'); /* Gradient sáng */
         }
         body.dark {
             background-color: #1a1a1a;
             color: #f1f1f1;
-            background-image: url('https://images.unsplash.com/photo-1618354691438-25e1c5c66019?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'); /* Gradient tối */
         }
         h1 {
             text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px; /* Tăng kích thước khung */
+            width: 1000px; /* Kích thước cố định */
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.9); /* Nền mờ để nội dung dễ đọc */
             padding: 20px;
@@ -61,6 +61,8 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             text-align: center;
+            width: 100%; /* Đồng đều với container */
+            box-sizing: border-box;
         }
         body.light #result {
             background-color: #fff;
@@ -75,11 +77,15 @@
             margin-top: 20px;
             padding: 0;
             list-style: none;
+            width: 100%; /* Đồng đều với container */
         }
         #sessionList li {
             padding: 10px;
             margin-bottom: 5px;
             border-radius: 5px;
+            white-space: nowrap; /* Ngăn xuống dòng */
+            overflow-x: auto; /* Thanh cuộn ngang nếu nội dung dài */
+            text-overflow: ellipsis; /* Hiển thị "..." nếu nội dung bị cắt */
         }
         body.light #sessionList li {
             background-color: #e0e0e0;
@@ -88,13 +94,18 @@
             background-color: #3a3a3a;
         }
         footer {
+            max-width: 1000px; /* Đồng đều với container */
+            width: 1000px;
+            margin: 20px auto 0;
+            background: rgba(255, 255, 255, 0.9); /* Khung cho footer */
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            padding: 10px 0;
-            margin-top: 20px;
             font-size: 14px;
             color: #666;
         }
         body.dark footer {
+            background: rgba(0, 0, 0, 0.9); /* Khung tối */
             color: #bbb;
         }
         footer a {
@@ -118,9 +129,8 @@
     <footer>
         <p>Bản quyền thuộc về Hungs59 © 2025</p>
         <p>Timer Analyzer - Phân tích thời gian phiên làm việc</p>
-        
         <p>Cập nhật 16/04/2025</p>
-       
+        <p id="visitCounter"></p>
     </footer>
 
     <script>
@@ -128,6 +138,7 @@
         const resultDiv = document.getElementById('result');
         const sessionList = document.getElementById('sessionList');
         const themeToggle = document.getElementById('themeToggle');
+        const visitCounter = document.getElementById('visitCounter');
 
         // Xử lý giao diện sáng/tối
         const setTheme = (isDark) => {
@@ -149,6 +160,39 @@
             const isDark = document.body.className === 'dark';
             setTheme(!isDark);
         });
+
+        // Bộ đếm lượt truy cập
+        const updateVisitCounter = () => {
+            const today = new Date();
+            const dateKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; // YYYY-MM-DD
+            const monthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`; // YYYY-MM
+            const totalKey = 'totalVisits';
+
+            // Tăng lượt truy cập ngày
+            let dailyVisits = parseInt(localStorage.getItem(`dailyVisits_${dateKey}`) || '0');
+            dailyVisits++;
+            localStorage.setItem(`dailyVisits_${dateKey}`, dailyVisits.toString());
+
+            // Tăng lượt truy cập tháng
+            let monthlyVisits = parseInt(localStorage.getItem(`monthlyVisits_${monthKey}`) || '0');
+            monthlyVisits++;
+            localStorage.setItem(`monthlyVisits_${monthKey}`, monthlyVisits.toString());
+
+            // Tăng tổng lượt truy cập
+            let totalVisits = parseInt(localStorage.getItem(totalKey) || '0');
+            totalVisits++;
+            localStorage.setItem(totalKey, totalVisits.toString());
+
+            // Hiển thị lượt truy cập
+            visitCounter.innerHTML = `
+                Lượt truy cập hôm nay: ${dailyVisits} <br>
+                Lượt truy cập tháng này: ${monthlyVisits} <br>
+                Tổng lượt truy cập: ${totalVisits}
+            `;
+        };
+
+        // Gọi hàm cập nhật bộ đếm khi trang được tải
+        updateVisitCounter();
 
         // Hàm chuyển thời gian HH:MM:SS thành giây
         const parseTimeToSeconds = (timeStr) => {
