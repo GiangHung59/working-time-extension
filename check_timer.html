@@ -9,14 +9,19 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             transition: background-color 0.3s, color 0.3s;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         body.light {
             background-color: #f0f0f0;
             color: #333;
+            background-image: url('https://images.unsplash.com/photo-1556686102-7dbfa3e8341b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'); /* Gradient sáng */
         }
         body.dark {
             background-color: #1a1a1a;
             color: #f1f1f1;
+            background-image: url('https://images.unsplash.com/photo-1538370965046-79c0d6907af9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'); /* Gradient tối */
         }
         h1 {
             text-align: center;
@@ -24,6 +29,12 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9); /* Nền mờ để nội dung dễ đọc */
+            padding: 20px;
+            border-radius: 10px;
+        }
+        body.dark .container {
+            background: rgba(0, 0, 0, 0.9); /* Nền mờ tối */
         }
         #themeToggle {
             position: fixed;
@@ -137,6 +148,11 @@
             return date; // Trả về "DD/M/YYYY"
         };
 
+        // Hàm tạo khóa duy nhất để kiểm tra trùng lặp dựa trên name, time, created
+        const getSessionKey = (session) => {
+            return `${session.name}|${session.time}|${session.created}`;
+        };
+
         // Hàm đọc tệp CSV và chuyển thành mảng phiên
         const parseCsv = (csvContent) => {
             const lines = csvContent.split('\n').filter(line => line.trim());
@@ -167,7 +183,7 @@
                 return;
             }
 
-            let allSessions = new Set(); // Sử dụng Set để loại bỏ trùng lặp
+            let uniqueSessionKeys = new Set(); // Sử dụng Set để loại bỏ trùng lặp dựa trên name, time, created
             let sessionArray = []; // Mảng để lưu trữ phiên và sắp xếp
             let totalSeconds = 0;
             let uniqueDates = new Set(); // Đếm số ngày duy nhất
@@ -187,9 +203,9 @@
                     }
 
                     sessions.forEach(session => {
-                        const sessionStr = JSON.stringify(session);
-                        if (!allSessions.has(sessionStr)) {
-                            allSessions.add(sessionStr);
+                        const sessionKey = getSessionKey(session);
+                        if (!uniqueSessionKeys.has(sessionKey)) {
+                            uniqueSessionKeys.add(sessionKey);
                             sessionArray.push(session);
                             totalSeconds += parseTimeToSeconds(session.time);
                             uniqueDates.add(getDateFromCreated(session.created)); // Thêm ngày duy nhất
@@ -220,7 +236,7 @@
             resultDiv.innerHTML = `
                 <p><strong>Tổng thời gian:</strong> ${totalTime}</p>
                 <p><strong>Số ngày có thời gian:</strong> ${uniqueDaysCount} ngày (từ ${new Date(earliest).toLocaleDateString('vi-VN')} đến ${new Date(latest).toLocaleDateString('vi-VN')})</p>
-                <p><strong>Tổng số phiên (sau khi loại bỏ trùng lặp):</strong> ${allSessions.size}</p>
+                <p><strong>Tổng số phiên (sau khi loại bỏ trùng lặp):</strong> ${uniqueSessionKeys.size}</p>
             `;
 
             // Sắp xếp danh sách phiên theo thời gian created (gần nhất ở trên)
