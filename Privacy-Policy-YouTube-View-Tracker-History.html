@@ -9,54 +9,35 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             background-color: #f4f4f4;
             color: #333;
+            transition: background-color 0.3s, color 0.3s;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: left;
+            min-height: 100vh;
         }
 
         .container {
-            background-color: #ffffff;
-            padding: 20px;
             max-width: 800px;
-            width: 90%;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: relative;
         }
 
-        h1 {
+        h1, h2 {
             color: #4CAF50;
-            text-align: center;
-            font-size: 2em;
-        }
-
-        h2 {
-            color: #4CAF50;
-            font-size: 1.5em;
-            margin-top: 20px;
         }
 
         p {
             font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-
-        ul {
-            margin: 10px 0;
-        }
-
-        ul li {
-            font-size: 16px;
-            margin-left: 20px;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .footer {
@@ -68,75 +49,222 @@
 
         .contact-info {
             background-color: #f9f9f9;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
             margin-top: 20px;
-            border: 1px solid #ddd;
         }
 
-        .contact-info p {
-            font-size: 16px;
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
         }
 
-        .contact-info a {
+        body.dark-mode .section {
+            background-color: #2a2a2a;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        body.dark-mode .contact-info {
+            background-color: #333;
+        }
+
+        body.dark-mode .footer {
+            color: #aaa;
+        }
+
+        /* Toggle Button */
+        .toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .language-btn {
+            padding: 8px 16px;
+            border: 1px solid #4CAF50;
+            background-color: #fff;
             color: #4CAF50;
-            text-decoration: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .contact-info a:hover {
-            text-decoration: underline;
+        .language-btn.active, .language-btn:hover {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        body.dark-mode .language-btn {
+            background-color: #2a2a2a;
+            color: #4CAF50;
+        }
+
+        body.dark-mode .language-btn.active, body.dark-mode .language-btn:hover {
+            background-color: #4CAF50;
+            color: #fff;
         }
     </style>
 </head>
 <body>
+    <div class="toggle-container">
+        <button class="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <div class="language-switcher">
+            <button class="language-btn active" data-lang="en">English</button>
+            <button class="language-btn" data-lang="vi">Tiếng Việt</button>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>Privacy Policy</h1>
+        <h1 data-lang-key="title">Privacy Policy</h1>
 
         <div class="section">
-            <h2>Introduction</h2>
-            <p>Welcome to YouTube View Tracker History! This privacy policy outlines how we collect, use, and protect your data when you use our extension. We value your privacy and are committed to ensuring the confidentiality and security of your information.</p>
+            <h2 data-lang-key="introduction">Introduction</h2>
+            <p data-lang-key="introduction-text">Welcome to YouTube View Tracker History! This privacy policy outlines how we collect, use, and protect your data when you use our extension. We value your privacy and are committed to ensuring the confidentiality and security of your information.</p>
         </div>
 
         <div class="section">
-            <h2>Data Collection</h2>
-            <p>Our extension does not collect any personal or identifiable information. We only track data related to your YouTube activity, including the number of times you watch a video and when you first viewed it. This data is stored locally in your browser and is not sent to any external servers.</p>
+            <h2 data-lang-key="data-collection">Data Collection</h2>
+            <p data-lang-key="data-collection-text">Our extension does not collect any personal or identifiable information. We only track data related to your YouTube activity, including the number of times you watch a video and when you first viewed it. This data is stored locally in your browser and is not sent to any external servers.</p>
         </div>
 
         <div class="section">
-            <h2>Permissions</h2>
-            <p>The extension requests the following permissions:</p>
+            <h2 data-lang-key="permissions">Permissions</h2>
+            <p data-lang-key="permissions-text">The extension requests the following permissions:</p>
             <ul>
-                <li><strong>Storage:</strong> To store your video watch history locally on your browser.</li>
-                <li><strong>Scripting:</strong> To run scripts necessary for tracking and processing your YouTube activity.</li>
-                <li><strong>ActiveTab:</strong> To interact with the currently open YouTube tab.</li>
-                <li><strong>Tabs:</strong> To track the video currently being viewed in the browser tab.</li>
+                <li><strong data-lang-key="storage">Storage:</strong> <span data-lang-key="storage-text">To store your video watch history locally on your browser.</span></li>
+                <li><strong data-lang-key="scripting">Scripting:</strong> <span data-lang-key="scripting-text">To run scripts necessary for tracking and processing your YouTube activity.</span></li>
+                <li><strong data-lang-key="activetab">ActiveTab:</strong> <span data-lang-key="activetab-text">To interact with the currently open YouTube tab.</span></li>
+                <li><strong data-lang-key="tabs">Tabs:</strong> <span data-lang-key="tabs-text">To track the video currently being viewed in the browser tab.</span></li>
             </ul>
         </div>
 
         <div class="section">
-            <h2>Data Usage</h2>
-            <p>We use the data collected solely to enhance your experience with the extension. The data allows us to provide insights such as the number of times you’ve viewed a video and the date of your first viewing. No personal information or browsing activity outside of YouTube is tracked.</p>
+            <h2 data-lang-key="data-usage">Data Usage</h2>
+            <p data-lang-key="data-usage-text">We use the data collected solely to enhance your experience with the extension. The data allows us to provide insights such as the number of times you’ve viewed a video and the date of your first viewing. No personal information or browsing activity outside of YouTube is tracked.</p>
         </div>
 
         <div class="section">
-            <h2>Security</h2>
-            <p>Your privacy and security are important to us. All the data tracked by the extension is stored locally in your browser, which means it is not accessible to third parties. No data is shared or transmitted externally.</p>
+            <h2 data-lang-key="security">Security</h2>
+            <p data-lang-key="security-text">Your privacy and security are important to us. All the data tracked by the extension is stored locally in your browser, which means it is not accessible to third parties. No data is shared or transmitted externally.</p>
         </div>
 
         <div class="section">
-            <h2>Changes to This Policy</h2>
-            <p>We may update this privacy policy from time to time. Any changes will be reflected on this page. We encourage you to review this policy periodically to stay informed about how we protect your data.</p>
+            <h2 data-lang-key="changes">Changes to This Policy</h2>
+            <p data-lang-key="changes-text">We may update this privacy policy from time to time. Any changes will be reflected on this page. We encourage you to review this policy periodically to stay informed about how we protect your data.</p>
         </div>
 
         <div class="section contact-info">
-            <h2>Contact Us</h2>
-            <p>If you have any questions or concerns about this privacy policy, please contact us via the Chrome Web Store page for our extension:</p>
-            <p><strong>Chrome Web Store Link:</strong> <a href="https://chrome.google.com/webstore/detail/your-extension-url" target="_blank">Your Extension's Chrome Web Store URL</a></p>
+            <h2 data-lang-key="contact">Contact Us</h2>
+            <p data-lang-key="contact-text">If you have any questions or concerns about this privacy policy, please contact us via the Chrome Web Store page for our extension:</p>
+            <p><strong data-lang-key="chrome-store">Chrome Web Store Link:</strong> [Your Extension's Chrome Web Store URL]</p>
         </div>
 
         <div class="footer">
-            <p>&copy; 2025 YouTube View Tracker History. All rights reserved.</p>
+            <p>© 2025 YouTube View Tracker History. All rights reserved.</p>
         </div>
     </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+        });
+
+        // Language Switcher
+        const translations = {
+            en: {
+                title: "Privacy Policy",
+                introduction: "Introduction",
+                "introduction-text": "Welcome to YouTube View Tracker History! This privacy policy outlines how we collect, use, and protect your data when you use our extension. We value your privacy and are committed to ensuring the confidentiality and security of your information.",
+                "data-collection": "Data Collection",
+                "data-collection-text": "Our extension does not collect any personal or identifiable information. We only track data related to your YouTube activity, including the number of times you watch a video and when you first viewed it. This data is stored locally in your browser and is not sent to any external servers.",
+                permissions: "Permissions",
+                "permissions-text": "The extension requests the following permissions:",
+                storage: "Storage",
+                "storage-text": "To store your video watch history locally on your browser.",
+                scripting: "Scripting",
+                "scripting-text": "To run scripts necessary for tracking and processing your YouTube activity.",
+                activetab: "ActiveTab",
+                "activetab-text": "To interact with the currently open YouTube tab.",
+                tabs: "Tabs",
+                "tabs-text": "To track the video currently being viewed in the browser tab.",
+                "data-usage": "Data Usage",
+                "data-usage-text": "We use the data collected solely to enhance your experience with the extension. The data allows us to provide insights such as the number of times you’ve viewed a video and the date of your first viewing. No personal information or browsing activity outside of YouTube is tracked.",
+                security: "Security",
+                "security-text": "Your privacy and security are important to us. All the data tracked by the extension is stored locally in your browser, which means it is not accessible to third parties. No data is shared or transmitted externally.",
+                changes: "Changes to This Policy",
+                "changes-text": "We may update this privacy policy from time to time. Any changes will be reflected on this page. We encourage you to review this policy periodically to stay informed about how we protect your data.",
+                contact: "Contact Us",
+                "contact-text": "If you have any questions or concerns about this privacy policy, please contact us via the Chrome Web Store page for our extension:",
+            },
+            vi: {
+                title: "Chính Sách Bảo Mật",
+                introduction: "Giới Thiệu",
+                "introduction-text": "Chào mừng bạn đến với YouTube View Tracker History! Chính sách bảo mật này nêu rõ cách chúng tôi thu thập, sử dụng và bảo vệ dữ liệu của bạn khi bạn sử dụng tiện ích mở rộng của chúng tôi. Chúng tôi coi trọng quyền riêng tư của bạn và cam kết đảm bảo tính bảo mật và an toàn cho thông tin của bạn.",
+                "data-collection": "Thu Thập Dữ Liệu",
+                "data-collection-text": "Tiện ích mở rộng của chúng tôi không thu thập bất kỳ thông tin cá nhân hoặc thông tin nhận dạng nào. Chúng tôi chỉ theo dõi dữ liệu liên quan đến hoạt động YouTube của bạn, bao gồm số lần bạn xem một video và thời điểm bạn xem lần đầu tiên. Dữ liệu này được lưu trữ cục bộ trên trình duyệt của bạn và không được gửi đến bất kỳ máy chủ bên ngoài nào.",
+                permissions: "Quyền Truy Cập",
+                "permissions-text": "Tiện ích mở rộng yêu cầu các quyền sau:",
+                storage: "Lưu Trữ",
+                "storage-text": "Để lưu trữ lịch sử xem video của bạn cục bộ trên trình duyệt.",
+                scripting: "Kịch Bản",
+                "scripting-text": "Để chạy các kịch bản cần thiết cho việc theo dõi và xử lý hoạt động YouTube của bạn.",
+                activetab: "Tab Hoạt Động",
+                "activetab-text": "Để tương tác với tab YouTube đang mở.",
+                tabs: "Các Tab",
+                "tabs-text": "Để theo dõi video đang được xem trong tab trình duyệt.",
+                "data-usage": "Sử Dụng Dữ Liệu",
+                "data-usage-text": "Chúng tôi sử dụng dữ liệu thu thập được chỉ để nâng cao trải nghiệm của bạn với tiện ích mở rộng. Dữ liệu giúp chúng tôi cung cấp thông tin chi tiết như số lần bạn đã xem một video và ngày xem đầu tiên. Không có thông tin cá nhân hoặc hoạt động duyệt web ngoài YouTube được theo dõi.",
+                security: "Bảo Mật",
+                "security-text": "Quyền riêng tư và bảo mật của bạn rất quan trọng đối với chúng tôi. Tất cả dữ liệu được tiện ích mở rộng theo dõi được lưu trữ cục bộ trong trình duyệt của bạn, nghĩa là không thể truy cập bởi bên thứ ba. Không có dữ liệu nào được chia sẻ hoặc truyền ra ngoài.",
+                changes: "Thay Đổi Chính Sách Này",
+                "changes-text": "Chúng tôi có thể cập nhật chính sách bảo mật này theo thời gian. Mọi thay đổi sẽ được phản ánh trên trang này. Chúng tôi khuyến khích bạn xem lại chính sách này định kỳ để cập nhật thông tin về cách chúng tôi bảo vệ dữ liệu của bạn.",
+                contact: "Liên Hệ Với Chúng Tôi",
+                "contact-text": "Nếu bạn có bất kỳ câu hỏi hoặc mối quan ngại nào về chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua trang Chrome Web Store của tiện ích mở rộng:",
+            }
+        };
+
+        const languageButtons = document.querySelectorAll('.language-btn');
+        languageButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const lang = button.getAttribute('data-lang');
+                setLanguage(lang);
+                languageButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                element.textContent = translations[lang][key];
+            });
+            document.documentElement.lang = lang;
+        }
+
+        // Initialize language
+        setLanguage('en');
+    </script>
 </body>
 </html>
