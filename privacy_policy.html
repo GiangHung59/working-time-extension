@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính sách quyền riêng tư - Tiện ích Quản Lý Công Việc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chính sách quyền riêng tư</h1>
+    <p>Chính sách quyền riêng tư này mô tả cách tiện ích mở rộng Chrome "Quản Lý Công Việc" (sau đây gọi là "Tiện ích") thu thập, sử dụng và bảo vệ thông tin của bạn.</p>
+
+    <h2>1. Thông tin chúng tôi thu thập</h2>
+    <p>Tiện ích "Quản Lý Công Việc" được thiết kế để hoạt động cục bộ trên trình duyệt của bạn và <strong>không thu thập bất kỳ thông tin cá nhân nào có thể nhận dạng được từ người dùng</strong>. Tất cả dữ liệu liên quan đến công việc và cài đặt đều được lưu trữ cục bộ trên trình duyệt của bạn bằng cách sử dụng API <code>chrome.storage</code>.</p>
+    <p>Các loại dữ liệu được lưu trữ cục bộ bao gồm:</p>
+    <ul>
+        <li>Danh sách các nhiệm vụ (tên nhiệm vụ, thời gian, trạng thái, v.v.)</li>
+        <li>Cài đặt cấu hình Telegram (Bot Token, Chat ID)</li>
+        <li>Cài đặt cấu hình Proxy (loại proxy, host, port, thông tin xác thực)</li>
+        <li>Tùy chọn giao diện người dùng (chế độ sáng/tối, vị trí/kích thước panel)</li>
+    </ul>
+
+    <h2>2. Cách chúng tôi sử dụng thông tin</h2>
+    <p>Thông tin được lưu trữ cục bộ chỉ được sử dụng để cung cấp chức năng cốt lõi của Tiện ích, bao gồm:</p>
+    <ul>
+        <li>Lưu trữ và quản lý danh sách công việc của bạn.</li>
+        <li>Gửi thông báo nhiệm vụ qua trình duyệt hoặc Telegram (nếu được cấu hình).</li>
+        <li>Áp dụng cài đặt proxy cho các kết nối Telegram.</li>
+        <li>Đồng bộ hóa trạng thái và dữ liệu giữa các tab trình duyệt.</li>
+        <li>Cá nhân hóa trải nghiệm người dùng dựa trên các tùy chọn giao diện.</li>
+    </ul>
+    <p><strong>Chúng tôi không chia sẻ, bán hoặc phân phối bất kỳ dữ liệu nào của bạn cho bên thứ ba.</strong></p>
+
+    <h2>3. Quyền hạn của tiện ích</h2>
+    <p>Tiện ích yêu cầu các quyền sau để hoạt động:</p>
+    <ul>
+        <li><strong>storage</strong>: Cho phép Tiện ích lưu trữ và truy xuất dữ liệu cục bộ trên trình duyệt của bạn. Đây là nơi tất cả các nhiệm vụ và cài đặt của bạn được lưu giữ.</li>
+        <li><strong>alarms</strong>: Cho phép Tiện ích tạo và quản lý các báo thức để gửi thông báo nhiệm vụ đúng giờ.</li>
+        <li><strong>notifications</strong>: Cho phép Tiện ích hiển thị thông báo trên màn hình của bạn khi một nhiệm vụ đến hạn hoặc có cập nhật quan trọng.</li>
+        <li><strong>host permissions (ví dụ: &lt;all_urls&gt;)</strong>: Quyền này cần thiết để Tiện ích có thể chèn các tập lệnh nội dung (content scripts) vào các trang web bạn truy cập. Điều này cho phép Tiện ích hiển thị panel quản lý công việc và đồng bộ hóa trạng thái giữa các tab. Tiện ích chỉ sử dụng quyền này để hiển thị giao diện người dùng và không đọc hay thay đổi nội dung trang web của bạn một cách không cần thiết.</li>
+    </ul>
+
+    <h2>4. Bảo mật dữ liệu</h2>
+    <p>Chúng tôi cam kết bảo vệ dữ liệu của bạn. Mặc dù tất cả dữ liệu được lưu trữ cục bộ trên thiết bị của bạn, chúng tôi khuyến khích bạn thực hiện các biện pháp bảo mật chung cho trình duyệt và thiết bị của mình.</p>
+
+    <h2>5. Thay đổi đối với Chính sách quyền riêng tư này</h2>
+    <p>Chúng tôi có thể cập nhật Chính sách quyền riêng tư này theo thời gian. Mọi thay đổi sẽ được đăng trên trang này. Chúng tôi khuyến khích bạn xem lại Chính sách quyền riêng tư này định kỳ để nắm bắt thông tin mới nhất.</p>
+
+    <h2>6. Liên hệ chúng tôi</h2>
+    <p>Nếu bạn có bất kỳ câu hỏi nào về Chính sách quyền riêng tư này, vui lòng liên hệ với chúng tôi qua [Địa chỉ email hỗ trợ của bạn hoặc liên kết hỗ trợ].</p>
+
+    <p>Ngày có hiệu lực: 10 tháng 7 năm 2025</p>
+</body>
+</html>
+
